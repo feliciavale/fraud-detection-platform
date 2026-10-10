@@ -1,0 +1,1 @@
+{"features": ["amount", "oldbalanceOrg", "oldbalanceDest", "drainRatio", "destOldZero", "isTransfer", "hour"], "threshold": 0.5}
