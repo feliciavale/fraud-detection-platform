@@ -54,5 +54,6 @@ class MobileMoneyDetector(Detector):
         return {
             "fraud_probability": round(prob, 4),
             "decision": "review" if prob >= self.threshold else "approve",
-            "top_reasons": [{"feature": f, "value": float(v), "impact": round(float(s), 3)} for f, s, v in ranked],
+            "top_reasons": [{"feature": f, "value": float(v), "impact": round(float(s), 3),
+                 "direction": "raises risk" if s > 0 else "lowers risk"} for f, s, v in ranked],
         }
