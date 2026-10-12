@@ -130,7 +130,7 @@ Example request to `POST /score/mobile_money`:
 {"type": "TRANSFER", "amount": 696575.46, "oldbalanceOrg": 696575.46, "oldbalanceDest": 0}
 ```
 
-Response (shortened): `fraud_probability` 0.9999 (a risk score, see above), `decision` "review", and `top_reasons` led by `drainRatio`, each with its impact and whether it "raises risk" or "lowers risk". The e-commerce detector will be added as a second type (`ecommerce`).
+Response (shortened): `risk_score` 0.9999 (not a calibrated probability, see above), `decision` "review", and `top_reasons` led by `drainRatio`, each with its impact and whether it "raises risk" or "lowers risk". The e-commerce detector will be added as a second type (`ecommerce`).
 
 ## Project structure
 

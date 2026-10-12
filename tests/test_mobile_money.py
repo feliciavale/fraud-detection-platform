@@ -29,19 +29,19 @@ def test_schema_has_fields(client):
 def test_fraud_is_flagged(client):
     r = client.post("/score/mobile_money", json=FRAUD).json()
     assert r["decision"] == "review"
-    assert r["fraud_probability"] > 0.9
+    assert r["risk_score"] > 0.9
     assert r["top_reasons"][0]["feature"] == "drainRatio"
 
 
 def test_normal_is_approved(client):
     r = client.post("/score/mobile_money", json=NORMAL).json()
     assert r["decision"] == "approve"
-    assert r["fraud_probability"] < 0.1
+    assert r["risk_score"] < 0.1
 
 
 def test_payment_type_skips_model(client):
     r = client.post("/score/mobile_money", json={**NORMAL, "type": "PAYMENT"}).json()
-    assert r["fraud_probability"] == 0.0
+    assert r["risk_score"] == 0.0
 
 
 def test_missing_field_returns_422(client):

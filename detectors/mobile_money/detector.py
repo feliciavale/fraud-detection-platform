@@ -44,7 +44,7 @@ class MobileMoneyDetector(Detector):
             raise ValueError(f"type must be one of {TYPES}")
 
         if record["type"] not in RISKY_TYPES:
-            return {"fraud_probability": 0.0, "decision": "approve",
+            return {"risk_score": 0.0, "decision": "approve",
                     "top_reasons": [{"feature": "type", "note": "No fraud seen in this type in training data"}]}
 
         X = add_features(pd.DataFrame([record]))[self.features]
@@ -52,7 +52,7 @@ class MobileMoneyDetector(Detector):
         shap_values = self.explainer(X)[0].values
         ranked = sorted(zip(self.features, shap_values, X.iloc[0]), key=lambda t: -abs(t[1]))[:3]
         return {
-            "fraud_probability": round(prob, 4),
+            "risk_score": round(prob, 4),
             "decision": "review" if prob >= self.threshold else "approve",
             "top_reasons": [{"feature": f, "value": float(v), "impact": round(float(s), 3),
                  "direction": "raises risk" if s > 0 else "lowers risk"} for f, s, v in ranked],

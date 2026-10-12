@@ -9,4 +9,4 @@ class Detector(ABC):
 
     @abstractmethod
     def predict(self, record: dict) -> dict:
-        """Return {fraud_probability, decision, top_reasons}."""
+        """Return {risk_score, decision, top_reasons}."""
