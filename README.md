@@ -9,7 +9,7 @@ A multi-type fraud detection platform. Each fraud type has its own dataset, feat
 | Module | Status |
 |---|---|
 | Mobile money fraud (PaySim) | Done: model, API, tests, CI |
-| E-commerce fraud (IEEE-CIS) | Model trained and saved; API plugin and tests in progress |
+| E-commerce fraud (IEEE-CIS) | Done: models, API plugin, tests |
 | Web frontend (Next.js) | Planned |
 | Docker Compose, PostgreSQL, deployment | Planned |
 
