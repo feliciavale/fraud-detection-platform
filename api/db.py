@@ -2,7 +2,7 @@
 
 DATABASE_URL decides which database is used:
   - not set:  sqlite:///./sentinel.db  (a single file in the project root, no installation)
-  - PostgreSQL later, for example: postgresql+psycopg://user:password@host:5432/sentinel
+  - PostgreSQL, for example the connection string from Neon: postgresql://user:password@host/dbname?sslmode=require
 The code below works with both.
 """
 import os
@@ -11,10 +11,25 @@ from datetime import datetime, timezone
 from sqlalchemy import JSON, DateTime, Float, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sentinel.db")
 
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
-engine = create_engine(DATABASE_URL, connect_args=connect_args)
+def normalise_url(url: str) -> str:
+    """Hosts such as Neon give URLs starting with postgres:// or postgresql://.
+    Point them at the psycopg (version 3) driver that requirements-ci.txt installs."""
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg://" + url[len(prefix):]
+    return url
+
+
+DATABASE_URL = normalise_url(os.getenv("DATABASE_URL", "sqlite:///./sentinel.db"))
+
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    # pool_pre_ping: a hosted database may close idle connections (Neon sleeps after a few minutes),
+    # so each connection is checked before use and replaced if it was closed.
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=300)
+
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 

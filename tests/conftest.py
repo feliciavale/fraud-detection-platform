@@ -1,5 +1,6 @@
 import os
 import tempfile
 
-# Use a throwaway SQLite file for tests. This runs before api.db is imported.
-os.environ["DATABASE_URL"] = "sqlite:///" + os.path.join(tempfile.mkdtemp(), "test.db")
+# Tests use a throwaway SQLite file, unless TEST_DATABASE_URL points at an empty test database
+# (for example a local PostgreSQL). This runs before api.db is imported.
+os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL") or "sqlite:///" + os.path.join(tempfile.mkdtemp(), "test.db")

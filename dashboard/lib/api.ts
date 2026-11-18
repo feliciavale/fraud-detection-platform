@@ -41,19 +41,26 @@ export class ApiError extends Error {
   }
 }
 
-const UNREACHABLE = "Cannot reach the API. Is uvicorn running on port 8000?";
+// Locally the usual cause is that uvicorn is not running. Online, the free server sleeps when idle
+// and takes about a minute to wake up.
+function unreachableMessage(): string {
+  const local = typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  return local
+    ? "Cannot reach the API. Is uvicorn running on port 8000?"
+    : "The scoring server is not responding. If the site has been idle it may be starting up, which takes about a minute. Please wait and refresh the page.";
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let r: Response;
   try {
     r = await fetch(`${BASE}${path}`, { ...init, credentials: "same-origin" });
   } catch {
-    throw new ApiError(UNREACHABLE, 0);
+    throw new ApiError(unreachableMessage(), 0);
   }
   const isJson = (r.headers.get("content-type") ?? "").includes("application/json");
   if (!r.ok) {
     // When FastAPI is down, the Next.js proxy answers with a non-JSON 5xx page.
-    if (r.status >= 500 && !isJson) throw new ApiError(UNREACHABLE, 0);
+    if (r.status >= 500 && !isJson) throw new ApiError(unreachableMessage(), 0);
     let message = `Request failed (${r.status}).`;
     if (isJson) {
       const d = await r.json().catch(() => null);
