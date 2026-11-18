@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. Change a value here and every class that uses it updates.
+  Each --color-NAME becomes Tailwind classes such as bg-NAME, text-NAME, border-NAME.
+*/
+@theme {
+  --color-ink: #14243a;       /* sidebar, headings, primary button, risk bar */
+  --color-ink-soft: #2a3b55;  /* hover state of the primary button */
+  --color-canvas: #f4f5f7;    /* page background behind the white panels */
+  --color-line: #dde1e7;      /* borders and dividers */
+  --color-muted: #5b6676;     /* secondary text */
+  --color-raise: #b42318;     /* a reason that raises risk */
+  --color-lower: #15803d;     /* a reason that lowers risk */
+}
+
+/* Fonts are loaded in app/layout.tsx and exposed as CSS variables. */
+@theme inline {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}

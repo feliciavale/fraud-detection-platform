@@ -116,6 +116,7 @@ shap==0.53.0
 six==1.17.0
 slicer==0.0.8
 soupsieve==2.10
+SQLAlchemy==2.1.9
 stack-data==0.6.3
 starlette==1.7.0
 terminado==0.18.1
